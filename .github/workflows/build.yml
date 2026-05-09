@@ -1,9 +1,12 @@
-name: Build Linux and macOS
+name: Build and Release
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -13,29 +16,21 @@ jobs:
         os: [ubuntu-latest, macos-latest]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
+    - run: |
         python -m pip install --upgrade pip
         pip install customtkinter requests PyGithub pyinstaller
 
-    - name: Build with PyInstaller
-      working-directory: ./windows
-      run: |
-        python -m PyInstaller --noconsole --onefile --name "X-Fetch" --clean main.py
-        echo "=== لیست فایل‌های ساخته شده ==="
-        ls -R dist/
+    - working-directory: ./windows
+      run: python -m PyInstaller --noconsole --onefile --name "X-Fetch" --clean main.py
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
+    - uses: softprops/action-gh-release@v2
       with:
-        name: X-Fetch-${{ matrix.os }}
-        path: windows/dist/
-        if-no-files-found: error
+        tag_name: "Latest"
+        name: "Auto-Build Release"
+        files: windows/dist/*
