@@ -26,11 +26,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install customtkinter requests PyGithub pyinstaller
 
-    - working-directory: ./windows
-      run: python -m PyInstaller --noconsole --onefile --name "X-Fetch" --clean main.py
+    - name: Build
+      working-directory: ./windows
+      run: |
+        python -m PyInstaller --noconsole --onefile --name "X-Fetch" --clean main.py
+        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          mv dist/X-Fetch dist/X-Fetch-Linux
+        else
+          mv dist/X-Fetch dist/X-Fetch-MacOS
+        fi
 
-    - uses: softprops/action-gh-release@v2
+    - name: Release
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: "Latest"
-        name: "Auto-Build Release"
-        files: windows/dist/*
+        tag_name: "v1.0.0"
+        name: "Linux and MacOS Builds"
+        files: windows/dist/X-Fetch-*
