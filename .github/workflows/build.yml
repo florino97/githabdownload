@@ -27,12 +27,11 @@ jobs:
         pip install customtkinter requests PyGithub pyinstaller
 
     - name: Build with PyInstaller
-      run: |
-        cd windows
-        python -m PyInstaller --noconsole --onefile --name "X-Fetch" --clean main.py
+      working-directory: ./windows
+      run: python -m PyInstaller --noconsole --onefile --name "X-Fetch" --clean main.py
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: X-Fetch-${{ matrix.os }}
-        path: windows/dist/*
+        path: "**/dist/*"
