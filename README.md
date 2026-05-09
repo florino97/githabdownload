@@ -13,8 +13,7 @@ Its working method is as follows:
 3. After that, whenever we want to download a file:
 * We edit the `README.md` file.
 * In the **commit message**, we write this:
-`download: direct link of the file`
-
+: direct link of the file
 
 4. GitHub itself downloads that file on its servers.
 5. The downloaded file is placed inside the `downloads/` folder in your repository.
